@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strava Weekly Activities</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Strava Weekly Activities</h1>
+
+    <label for="chartType">Select Chart Type:</label>
+    <select id="chartType">
+        <option value="weekly_distance">Weekly Distance</option>
+        <option value="pace">Pace</option>
+        <option value="calendar">Calendar</option>
+    </select>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        fetch('/data')
+            .then(response => response.json())
+            .then(chartData => {
+                // Create the stacked bar chart
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: chartData.datasets
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                stacked: true
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Distance (km)'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+    </script>
+</body>
+</html>
