@@ -16,7 +16,13 @@
         <option value="calendar">Calendar</option>
     </select>
 
-    <canvas id="myChart" width="400" height="200"></canvas>
+    <style>
+        #chartType {
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <canvas id="myChart" width=400" height="150"></canvas>
 
     <script>
         fetch('/data')
@@ -34,7 +40,11 @@
                         responsive: true,
                         scales: {
                             x: {
-                                stacked: true
+                                stacked: true,
+                                title: {
+                                    display: true,
+                                    text: 'Start of Week'  // Set your custom x-axis title here
+                                }
                             },
                             y: {
                                 stacked: true,
