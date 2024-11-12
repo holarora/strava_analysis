@@ -10,7 +10,7 @@ def index():
 
 @app.route('/data')
 def get_strava_data():
-    access_token = "0c8b63a4a9554bbca441d52cfe2137cb751b7996"
+    access_token = "0b72f3e423e28dea22f07dbb7447312d4197699e"
     before_epoch = 1731330329
     after_epoch = 1728259200
     url = "https://www.strava.com/api/v3/athlete/activities"
@@ -31,7 +31,8 @@ def get_strava_data():
         weekly_data = {}
 
         for activity in activities:
-            distance = activity.get("distance", 0)
+            distance = round(activity.get("distance", 0) / 1000, 1)
+
             start_date_str = activity.get('start_date_local')
             if isinstance(start_date_str, str):
                 start_date = datetime.fromisoformat(start_date_str)
@@ -44,12 +45,11 @@ def get_strava_data():
             if week_str not in weekly_data:
                 weekly_data[week_str] = []
 
-
             weekly_data[week_str].append(distance)
 
-
-        labels = list(weekly_data.keys())
-        stacked_data = [weekly_data[week] for week in labels]
+        sorted_weekly_data = sorted(weekly_data.items())
+        labels = [week for week, distances in sorted_weekly_data]
+        stacked_data = [distances for week, distances in sorted_weekly_data]
 
         # Pad shorter weeks to have the same number of activities (stacked bars will need the same length for each group)
         max_activities = max(len(activities) for activities in stacked_data)
@@ -61,13 +61,27 @@ def get_strava_data():
             "datasets": []
         }
 
+        color_palette = [
+            "rgba(153, 102, 255, 0.6)",  # Light Purple
+            "rgba(255, 99, 132, 0.6)",  # Light Red/Pink
+            "rgba(75, 192, 192, 0.6)",  # Light Turquoise
+            "rgba(255, 206, 86, 0.6)"  # Light Yellow
+        ]
+
+        border_palette = [
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 99, 132, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(255, 206, 86, 1)"
+        ]
+
         # Create a dataset for each activity within a week
         for i in range(max_activities):
             dataset = {
                 "label": f"Activity {i + 1}",
                 "data": [week[i] for week in stacked_data],
-                "backgroundColor": f"rgba({75 + (i * 30)}, 192, 192, 0.6)",
-                "borderColor": "rgba(75, 192, 192, 1)",
+                "backgroundColor": color_palette[i % 4],  # Cycle through 4 colors
+                "borderColor": border_palette[i % 4],
                 "borderWidth": 1
             }
             chart_data["datasets"].append(dataset)
