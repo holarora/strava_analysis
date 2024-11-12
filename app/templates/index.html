@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strava Weekly Activities</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+
 </head>
 <body>
     <h1>Strava Weekly Activities</h1>
@@ -25,54 +26,32 @@
     <canvas id="myChart" width=400" height="150"></canvas>
 
     <script>
-        fetch('/data')
-            .then(response => response.json())
-            .then(chartData => {
-                console.log("Chart Data Structure:", chartData);
-                const ctx = document.getElementById('myChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: chartData.datasets
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            x: {
-                                stacked: true,
-                                title: {
-                                    display: true,
-                                    text: 'Start of Week'
-                                }
-                            },
-                            y: {
-                                stacked: true,
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Distance (km)'
-                                }
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    title: function(tooltipItem) {
-                                        const activityDate = tooltipItem[0].raw.date;
-                                        return activityDate;
-                                    },
-                                    label: function(tooltipItem) {
-                                        const distance = tooltipItem.raw;
-                                        return ' ' + distance + ' km';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            })
-            .catch(error => console.error('Error fetching chart data:', error));
+        function loadChartScript(scriptUrl) {
+            const existingScript = document.getElementById('chartScript');
+            if (existingScript) {
+                existingScript.remove();
+            }
+
+            const script = document.createElement('script');
+            script.id = 'chartScript';
+            script.src = scriptUrl;
+            document.body.appendChild(script);
+        }
+
+        document.getElementById('chartType').addEventListener('change', function(event) {
+            const chartType = event.target.value;
+
+            if (chartType === 'weekly_distance') {
+                loadChartScript('static/js/weeklyDistance.js');
+            } else if (chartType === 'pace') {
+                loadChartScript('static/js/pace.js');
+            } else if (chartType === 'calendar') {
+                loadChartScript('static/js/calendar.js');
+            }
+        });
+
+        loadChartScript('static/js/weeklyDistance.js');
     </script>
+
 </body>
 </html>
