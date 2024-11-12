@@ -28,7 +28,7 @@
         fetch('/data')
             .then(response => response.json())
             .then(chartData => {
-                // Create the stacked bar chart
+                console.log("Chart Data Structure:", chartData);
                 const ctx = document.getElementById('myChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'bar',
@@ -43,7 +43,7 @@
                                 stacked: true,
                                 title: {
                                     display: true,
-                                    text: 'Start of Week'  // Set your custom x-axis title here
+                                    text: 'Start of Week'
                                 }
                             },
                             y: {
@@ -52,6 +52,20 @@
                                 title: {
                                     display: true,
                                     text: 'Distance (km)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItem) {
+                                        const activityDate = tooltipItem[0].raw.date;
+                                        return activityDate;
+                                    },
+                                    label: function(tooltipItem) {
+                                        const distance = tooltipItem.raw;
+                                        return ' ' + distance + ' km';
+                                    }
                                 }
                             }
                         }
