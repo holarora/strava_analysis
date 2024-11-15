@@ -2,7 +2,7 @@ fetch('/data')
     .then(response => response.json())
     .then(chartData => {
         const ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
+        chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: chartData.labels,

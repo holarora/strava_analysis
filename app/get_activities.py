@@ -102,9 +102,9 @@ def get_pace_data(activities):
     weekly_data = {}
 
     for activity in activities:
-        distance = round(activity.get("distance", 0) / 1000, 1)  # Convert meters to km
-        moving_time = activity.get("moving_time", 0)  # Convert seconds to mins
-        pace = moving_time / distance if moving_time != 0 else 0  # Speed in km/h
+        distance = round(activity.get("distance", 0) / 1000, 1)
+        moving_time = round(activity.get("moving_time", 0) / 60, 1)
+        pace = moving_time / distance if distance != 0 else 0
 
         start_date_str = activity.get('start_date_local')
         start_date = datetime.fromisoformat(start_date_str)
@@ -118,7 +118,7 @@ def get_pace_data(activities):
 
     sorted_weekly_data = sorted(weekly_data.items())
     labels = [week for week, paces in sorted_weekly_data]
-    speeds = [max(paces) for week, paces in sorted_weekly_data]  # Max speed for each week
+    speeds = [paces for week, paces in sorted_weekly_data]
 
     chart_data = {
         "labels": labels,

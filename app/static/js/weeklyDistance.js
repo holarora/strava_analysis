@@ -4,7 +4,7 @@ fetch('/data')
     .then(chartData => {
         console.log("Chart Data Structure:", chartData);
         const ctx = document.getElementById('myChart').getContext('2d');
-        new Chart(ctx, {
+        chart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: chartData.labels,
