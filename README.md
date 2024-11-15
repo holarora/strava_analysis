@@ -1,4 +1,13 @@
 Work in progress...
 
-run the following code:
-npm install strava_api_v3
+### To do ###
+ Markup :
+    - [x] rendering
+    - [ ] pace diagram: change distance to pace
+    - [ ] calendar: import actual data
+    - [ ] calendar: x axis date
+    - [ ] distance: title
+    - [ ] miles/km
+    - [ ] authorization
+
+
