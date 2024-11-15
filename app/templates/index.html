@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strava Weekly Activities</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
 
 </head>
 <body>
@@ -23,34 +25,47 @@
         }
     </style>
 
-    <canvas id="myChart" width=400" height="150"></canvas>
+    <canvas id="myChart" width="400" height="150"></canvas>
 
     <script>
-        function loadChartScript(scriptUrl) {
+        let chart = null;
+
+        document.getElementById('chartType').addEventListener('change', function(event) {
             const existingScript = document.getElementById('chartScript');
             if (existingScript) {
                 existingScript.remove();
             }
-
+            if (chart) {
+                chart.destroy();
+            }
             const script = document.createElement('script');
             script.id = 'chartScript';
-            script.src = scriptUrl;
-            document.body.appendChild(script);
-        }
 
-        document.getElementById('chartType').addEventListener('change', function(event) {
             const chartType = event.target.value;
 
             if (chartType === 'weekly_distance') {
-                loadChartScript('static/js/weeklyDistance.js');
+                script.src ='static/js/weeklyDistance.js';
             } else if (chartType === 'pace') {
-                loadChartScript('static/js/pace.js');
+                script.src ='static/js/pace.js';
             } else if (chartType === 'calendar') {
-                loadChartScript('static/js/calendar.js');
+                script.src = 'static/js/calendar.js';
             }
+            document.body.appendChild(script);
         });
 
-        loadChartScript('static/js/weeklyDistance.js');
+        document.addEventListener('DOMContentLoaded', function() {
+            const script = document.createElement('script');
+            script.src = 'static/js/weeklyDistance.js';
+            script.type = 'text/javascript';
+            script.id = 'chartScript';
+
+            document.body.appendChild(script);
+
+            script.onerror = function() {
+                console.error('Error loading the weeklyDistance.js script.');
+            };
+        });
+
     </script>
 
 </body>
