@@ -14,7 +14,6 @@ def index():
 @app.route('/data')
 def get_strava_data():
     access_token = "df22f6d0d8571bfd9c266fb125d0d68795c3f708"
-    before_epoch = 1731330329
     after_epoch = 1728259200
     url = "https://www.strava.com/api/v3/athlete/activities"
     headers = {
@@ -22,7 +21,6 @@ def get_strava_data():
     }
     params = {
         "after": after_epoch,
-        "before": before_epoch,
         "page": 1,
         "per_page": 200
     }
