@@ -13,7 +13,7 @@ def index():
 
 @app.route('/data')
 def get_strava_data():
-    access_token = "df22f6d0d8571bfd9c266fb125d0d68795c3f708"
+    access_token = "44f011e26cbdcb8c0889774bd6a2a662f21d3dc4"
     after_epoch = 1728259200
     url = "https://www.strava.com/api/v3/athlete/activities"
     headers = {
@@ -40,6 +40,8 @@ def get_strava_data():
         else:
             return jsonify({"error": "Unsupported chart type"}), 400
     else:
+        print(f"Error: {response.status_code}")
+        print(f"Response: {response.text}")
         return jsonify({"error": "Failed to retrieve data"}), 500
 
 
@@ -138,7 +140,6 @@ def get_pace_data(activities):
 def get_calendar_data(activities):
     daily_data = defaultdict(float)
 
-    # Loop through each activity and aggregate the distance by date
     for activity in activities:
         distance = round(activity.get("distance", 0) / 1000, 1)
 
@@ -148,7 +149,6 @@ def get_calendar_data(activities):
         date_str = start_date.strftime('%Y-%m-%d')
         daily_data[date_str] += distance
 
-    # Create the final chart data structure
     chart_data = {
         "datasets": [{
             "label": 'Activity Distance',
@@ -156,11 +156,12 @@ def get_calendar_data(activities):
         }]
     }
 
-    # Populate the data array with the daily aggregated distance
+    print(f"Daily Data: {daily_data}")
+
     for date, distance in daily_data.items():
         chart_data["datasets"][0]["data"].append({
             "x": datetime.strptime(date, '%Y-%m-%d').timestamp() * 1000,
-            "y": 0,
+            "y": datetime.strptime(date, '%Y-%m-%d').month,
             "v": distance
         })
 
