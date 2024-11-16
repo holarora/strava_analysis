@@ -32,9 +32,8 @@ fetch('/data')
                 plugins: {
                     tooltip: {
                         callbacks: {
-                            title: function(tooltipItem) {
-                                const activityDate = tooltipItem[0].raw.date;
-                                return activityDate;
+                            title: function() {
+                                return "Distance";
                             },
                             label: function(tooltipItem) {
                                 const distance = tooltipItem.raw;
