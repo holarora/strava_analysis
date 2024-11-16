@@ -2,10 +2,10 @@ Work in progress...
 
 ### To do ###
 - [x] rendering
-- [ ] pace diagram: change distance to pace
+- [x] pace diagram: change distance to pace
 - [ ] calendar: import actual data
-- [ ] calendar: x axis date
-- [ ] distance: title
+- [x] calendar: x axis date
+- [x] distance: title (marked as done for now)
 - [ ] miles/km
 - [ ] authorization
 
