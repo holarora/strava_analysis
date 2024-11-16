@@ -10,6 +10,11 @@ By toggling the Chart Type option, you can choose to view your stats in the foll
 
 3. Heatmap📅 : A calendar highlighting the days when an activity was recorded. The darker the shade, the greater the distance covered on that day.
 
+### Tech Stack ###
+- Strava API
+- Python
+- Chart.js
+- JSON
 
 ### How to use ###
 1. Clone this repository to your local machine.
