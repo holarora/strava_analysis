@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, render_template, request
+import logging
 import requests
 from datetime import datetime, timedelta
 from collections import defaultdict
 
 app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
 
 
 @app.route('/')
@@ -13,7 +15,7 @@ def index():
 
 @app.route('/data')
 def get_strava_data():
-    access_token = "44f011e26cbdcb8c0889774bd6a2a662f21d3dc4"
+    access_token = "3e1914270801c42b47350e69518dbb06d5df0a85"
     after_epoch = 1728259200
     url = "https://www.strava.com/api/v3/athlete/activities"
     headers = {
@@ -120,19 +122,37 @@ def get_pace_data(activities):
 
     sorted_weekly_data = sorted(weekly_data.items())
     labels = [week for week, paces in sorted_weekly_data]
-    speeds = [paces for week, paces in sorted_weekly_data]
+    stacked_data = [paces for week, paces in sorted_weekly_data]
+
+    max_activities = max(len(activities) for activities in stacked_data)
+    for i in range(len(stacked_data)):
+        stacked_data[i] += [0] * (max_activities - len(stacked_data[i]))
 
     chart_data = {
         "labels": labels,
-        "datasets": [{
-            "label": 'Max Speed (km/h)',
-            "data": speeds,
-            "borderColor": 'rgba(75, 192, 192, 1)',
-            "backgroundColor": 'rgba(75, 192, 192, 0.2)',
-            "fill": False,
-            "borderWidth": 1
-        }]
+        "datasets": []
     }
+    color_palette = [
+        "rgba(153, 102, 255, 0.6)",
+        "rgba(255, 99, 132, 0.6)",
+        "rgba(75, 192, 192, 0.6)",
+        "rgba(255, 206, 86, 0.6)"
+    ]
+    border_palette = [
+        "rgba(153, 102, 255, 1)",
+        "rgba(255, 99, 132, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(255, 206, 86, 1)"
+    ]
+    for i in range(max_activities):
+        dataset = {
+            "label": f"Activity {i + 1}",
+            "data": [week[i] for week in stacked_data],
+            "backgroundColor": color_palette[i % 4],
+            "borderColor": border_palette[i % 4],
+            "borderWidth": 1
+        }
+        chart_data["datasets"].append(dataset)
 
     return chart_data
 
@@ -141,10 +161,10 @@ def get_calendar_data(activities):
     daily_data = defaultdict(float)
 
     for activity in activities:
-        distance = round(activity.get("distance", 0) / 1000, 1)
+        distance = round(activity.get("v", 0) / 1000, 1)
 
-        start_date_str = activity.get('start_date_local')
-        start_date = datetime.fromisoformat(start_date_str)
+        start_date_str = activity.get('date')
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
 
         date_str = start_date.strftime('%Y-%m-%d')
         daily_data[date_str] += distance
@@ -156,12 +176,12 @@ def get_calendar_data(activities):
         }]
     }
 
-    print(f"Daily Data: {daily_data}")
+    print(f"Daily Data: {daily_data}", flush=True)
 
     for date, distance in daily_data.items():
         chart_data["datasets"][0]["data"].append({
-            "x": datetime.strptime(date, '%Y-%m-%d').timestamp() * 1000,
-            "y": datetime.strptime(date, '%Y-%m-%d').month,
+            "x": datetime.strptime(date, '%Y-%m-%d').timestamp() * 1000,  # Convert to timestamp (ms)
+            "y": datetime.strptime(date, '%Y-%m-%d').month,  # Use month for 'y'
             "v": distance
         })
 
