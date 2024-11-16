@@ -33,7 +33,7 @@ const matrixData = activityData.map(entry => {
 });
 console.log(matrixData);
 
-fetch('/data')
+fetch('/data?chart_type=calendar')
     .then(response => response.json())
     .then(chartData => {
         console.log("calendar data:", chartData )
@@ -43,15 +43,14 @@ fetch('/data')
             return;
         }
 
-        // Determine which weeks have data
-        const weeksWithData = [...new Set(matrixData.map(dataPoint => dataPoint.y))];
+        const weeksWithData = [...new Set(chartData.datasets.map(dataPoint => dataPoint.y))];
 
         chart = new Chart(ctx, {
             type: 'matrix',
             data: {
                 datasets: [{
                     label: 'Activity Distance',
-                    data: matrixData,
+                    data: chartData.datasets,
                     backgroundColor({ raw }) {
                         const baseColor = 'rgba(49, 191, 250';
                         const alpha = Math.max(0.05 + (raw.v / 18), 0.1);

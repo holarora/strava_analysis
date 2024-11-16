@@ -1,4 +1,4 @@
-fetch('/data')
+fetch('/data?chart_type=pace')
     .then(response => response.json())
     .then(chartData => {
         const ctx = document.getElementById('myChart').getContext('2d');
