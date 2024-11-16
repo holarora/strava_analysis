@@ -18,9 +18,11 @@ By toggling the Chart Type option, you can choose to view your stats in the foll
 
 ### How to use ###
 1. Clone this repository to your local machine.
-2. Create a file client_secrets.txt,
-3. Run [TBC]
-4. Enjoy your neatly presented stats!
+2. Create a file client_secrets.txt, containing your Strava Client ID and Client Secret. ([ref for steps 2-5](https://developers.strava.com/docs/getting-started/))
+3. Run the app/auth.py file, click Authenticate, and obtain authorization code in URL.
+4. Paste code in designated field in app/getToken.py file. Run the file and obtain access token in terminal. 
+5. Paste access code in app/main.py. Run the file and access your local server. 
+6. Enjoy your neatly presented stats!
 
 ### PRs are welcome! ###
 If you run into any problems, feel free to make a pull request or contact me (@holarora). <br>
@@ -33,7 +35,7 @@ As I intend to use this project for my daily strava activities, they are current
 - [x] calendar: x axis date
 - [x] distance: title (marked as done for now)
 - [ ] miles/km
-- [ ] authorization
+- [ ] automate authorization process
 
 
 
